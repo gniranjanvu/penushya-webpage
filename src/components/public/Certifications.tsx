@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Award, Calendar, ExternalLink } from 'lucide-react';
 import { getCertifications } from '../../lib/api';
 import type { Certification } from '../../types';
+import { formatDateShort } from '../../utils/dateFormatter';
 
 const Certifications = () => {
   const [certifications, setCertifications] = useState<Certification[]>([]);
@@ -36,11 +37,6 @@ const Certifications = () => {
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0 },
-  };
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short' });
   };
 
   const isExpired = (expiryDate?: string) => {
@@ -147,12 +143,12 @@ const Certifications = () => {
                     <div className="space-y-2 mb-4">
                       <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                         <Calendar className="w-4 h-4" />
-                        <span>Issued: {formatDate(cert.issue_date)}</span>
+                        <span>Issued: {formatDateShort(cert.issue_date)}</span>
                       </div>
                       {cert.expiry_date && (
                         <div className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
                           <Calendar className="w-4 h-4" />
-                          <span>Valid until: {formatDate(cert.expiry_date)}</span>
+                          <span>Valid until: {formatDateShort(cert.expiry_date)}</span>
                         </div>
                       )}
                     </div>

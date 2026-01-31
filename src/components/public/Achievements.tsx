@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Trophy, Star, Medal, BookOpen, FileText, ExternalLink, Calendar, Users } from 'lucide-react';
 import { getAchievements, getPublications } from '../../lib/api';
 import type { Achievement, Publication } from '../../types';
+import { formatDateLong, formatPublicationDate } from '../../utils/dateFormatter';
 
 const Achievements = () => {
   const [achievements, setAchievements] = useState<Achievement[]>([]);
@@ -51,12 +52,6 @@ const Achievements = () => {
   const itemVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0 },
-  };
-
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return 'Date not available';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
   };
 
   const getAchievementIcon = (index: number) => {
@@ -197,7 +192,7 @@ const Achievements = () => {
                           {achievement.date && (
                             <div className="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400 mt-auto">
                               <Calendar className="w-4 h-4" />
-                              <span>{formatDate(achievement.date)}</span>
+                              <span>{formatDateLong(achievement.date)}</span>
                             </div>
                           )}
                         </div>
@@ -284,7 +279,7 @@ const Achievements = () => {
                               <div className="flex items-center gap-2">
                                 <Calendar className="w-4 h-4 text-rose-600 dark:text-rose-400" />
                                 <span className="text-sm text-gray-600 dark:text-gray-400">
-                                  {formatDate(publication.publication_date)}
+                                  {formatPublicationDate(publication.publication_date)}
                                 </span>
                               </div>
                             )}

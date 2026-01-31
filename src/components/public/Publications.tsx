@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { BookOpen, FileText, ExternalLink, Calendar, Users } from 'lucide-react';
 import { getPublications } from '../../lib/api';
 import type { Publication } from '../../types';
+import { formatPublicationDate } from '../../utils/dateFormatter';
 
 const Publications = () => {
   const [publications, setPublications] = useState<Publication[]>([]);
@@ -36,12 +37,6 @@ const Publications = () => {
   const itemVariants = {
     hidden: { opacity: 0, x: -30 },
     visible: { opacity: 1, x: 0 },
-  };
-
-  const formatDate = (dateString?: string) => {
-    if (!dateString) return 'Date not available';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
   };
 
   return (
@@ -137,7 +132,7 @@ const Publications = () => {
                           <div className="flex items-center gap-2">
                             <Calendar className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
                             <span className="text-sm text-gray-600 dark:text-gray-400">
-                              {formatDate(publication.publication_date)}
+                              {formatPublicationDate(publication.publication_date)}
                             </span>
                           </div>
                         )}
