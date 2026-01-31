@@ -8,3 +8,5 @@ export { default as Skills } from './Skills';
 export { default as Certifications } from './Certifications';
 export { default as Achievements } from './Achievements';
 export { default as Publications } from './Publications';
+export { default as Contact } from './Contact';
+export { default as Footer } from './Footer';
