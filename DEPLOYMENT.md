@@ -37,6 +37,8 @@ Before deploying, ensure you have:
 
 ### 2. Deploy to Vercel (Recommended)
 
+> **Note:** This project includes a `vercel.json` configuration file that handles SPA routing. This ensures that all routes (like `/admin/login`) are properly redirected to `index.html` so React Router can handle them, preventing 404 errors on direct URL access or page refresh.
+
 1. **Install Vercel CLI**
    ```bash
    npm install -g vercel
