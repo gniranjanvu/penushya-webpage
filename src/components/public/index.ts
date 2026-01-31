@@ -5,3 +5,6 @@ export { default as Experiences } from './Experiences';
 export { default as Education } from './Education';
 export { default as Projects } from './Projects';
 export { default as Skills } from './Skills';
+export { default as Certifications } from './Certifications';
+export { default as Achievements } from './Achievements';
+export { default as Publications } from './Publications';
