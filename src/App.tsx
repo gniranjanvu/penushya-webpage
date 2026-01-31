@@ -14,6 +14,14 @@ import AdminLayout from './components/admin/AdminLayout';
 import Dashboard from './components/admin/Dashboard';
 import MessageManager from './components/admin/MessageManager';
 import Settings from './components/admin/Settings';
+import ExperienceManager from './components/admin/ExperienceManager';
+import EducationManager from './components/admin/EducationManager';
+import ProjectManager from './components/admin/ProjectManager';
+import SkillManager from './components/admin/SkillManager';
+import CertificationManager from './components/admin/CertificationManager';
+import AchievementManager from './components/admin/AchievementManager';
+import PublicationManager from './components/admin/PublicationManager';
+import ResumeManager from './components/admin/ResumeManager';
 
 // Protected Route Component
 import { useEffect, useState } from 'react';
@@ -76,14 +84,14 @@ function App() {
             >
               <Route index element={<Navigate to="/admin/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
-              <Route path="experiences" element={<div className="p-6">Experiences Manager - Coming Soon</div>} />
-              <Route path="education" element={<div className="p-6">Education Manager - Coming Soon</div>} />
-              <Route path="projects" element={<div className="p-6">Projects Manager - Coming Soon</div>} />
-              <Route path="skills" element={<div className="p-6">Skills Manager - Coming Soon</div>} />
-              <Route path="certifications" element={<div className="p-6">Certifications Manager - Coming Soon</div>} />
-              <Route path="achievements" element={<div className="p-6">Achievements Manager - Coming Soon</div>} />
-              <Route path="publications" element={<div className="p-6">Publications Manager - Coming Soon</div>} />
-              <Route path="resume" element={<div className="p-6">Resume Manager - Coming Soon</div>} />
+              <Route path="experiences" element={<ExperienceManager />} />
+              <Route path="education" element={<EducationManager />} />
+              <Route path="projects" element={<ProjectManager />} />
+              <Route path="skills" element={<SkillManager />} />
+              <Route path="certifications" element={<CertificationManager />} />
+              <Route path="achievements" element={<AchievementManager />} />
+              <Route path="publications" element={<PublicationManager />} />
+              <Route path="resume" element={<ResumeManager />} />
               <Route path="messages" element={<MessageManager />} />
               <Route path="subscribers" element={<MessageManager />} />
               <Route path="settings" element={<Settings />} />
