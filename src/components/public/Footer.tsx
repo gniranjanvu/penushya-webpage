@@ -83,7 +83,7 @@ const Footer = () => {
               Penushya Varri
             </h3>
             <p className="text-gray-400 mb-4">
-              Full Stack Developer passionate about creating innovative solutions
+              Robotics & Automation Engineer passionate about creating innovative solutions
               and pushing the boundaries of technology.
             </p>
             <div className="flex gap-4">

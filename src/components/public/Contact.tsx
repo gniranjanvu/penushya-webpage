@@ -222,7 +222,7 @@ const Contact = () => {
                   Penushya Varri
                 </h4>
                 <p className="text-gray-600 dark:text-gray-400">
-                  Full Stack Developer & ML Enthusiast
+                  Robotics & Automation Engineer
                 </p>
               </div>
 
