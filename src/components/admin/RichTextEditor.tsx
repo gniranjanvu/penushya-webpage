@@ -365,7 +365,7 @@ const RichTextEditor: React.FC<RichTextEditorProps> = ({
       </div>
 
       {/* Editor Content */}
-      <div className="bg-white dark:bg-gray-800">
+      <div className="relative bg-white dark:bg-gray-800">
         <EditorContent editor={editor} />
         {!content && (
           <div className="absolute top-0 left-0 p-4 text-gray-400 pointer-events-none">
