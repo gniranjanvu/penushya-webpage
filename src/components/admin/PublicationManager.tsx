@@ -56,10 +56,19 @@ const PublicationManager: React.FC = () => {
     try {
       setSubmitting(true);
 
+      // Convert empty strings to null for optional fields
+      const publicationData = {
+        ...formData,
+        publication_venue: formData.publication_venue || null,
+        publication_date: formData.publication_date || null,
+        abstract: formData.abstract || null,
+        url: formData.url || null,
+      };
+
       if (editingId) {
         const { error } = await supabase
           .from('publications')
-          .update(formData)
+          .update(publicationData)
           .eq('id', editingId);
 
         if (error) throw error;
@@ -67,7 +76,7 @@ const PublicationManager: React.FC = () => {
       } else {
         const { error } = await supabase
           .from('publications')
-          .insert([formData]);
+          .insert([publicationData]);
 
         if (error) throw error;
         toast.success('Publication added successfully');
@@ -75,9 +84,10 @@ const PublicationManager: React.FC = () => {
 
       fetchPublications();
       handleCancelForm();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving publication:', error);
-      toast.error(error.message || 'Failed to save publication');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save publication';
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
     }

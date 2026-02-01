@@ -10,3 +10,4 @@ export { default as CertificationManager } from './CertificationManager';
 export { default as AchievementManager } from './AchievementManager';
 export { default as PublicationManager } from './PublicationManager';
 export { default as ResumeManager } from './ResumeManager';
+export { default as RichTextEditor } from './RichTextEditor';

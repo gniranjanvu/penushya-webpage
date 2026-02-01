@@ -56,10 +56,18 @@ const CertificationManager: React.FC = () => {
     try {
       setSubmitting(true);
 
+      // Convert empty strings to null for optional fields
+      const certificationData = {
+        ...formData,
+        expiry_date: formData.expiry_date || null,
+        certificate_image_url: formData.certificate_image_url || null,
+        certificate_url: formData.certificate_url || null,
+      };
+
       if (editingId) {
         const { error } = await supabase
           .from('certifications')
-          .update(formData)
+          .update(certificationData)
           .eq('id', editingId);
 
         if (error) throw error;
@@ -67,7 +75,7 @@ const CertificationManager: React.FC = () => {
       } else {
         const { error } = await supabase
           .from('certifications')
-          .insert([formData]);
+          .insert([certificationData]);
 
         if (error) throw error;
         toast.success('Certification added successfully');
@@ -75,9 +83,10 @@ const CertificationManager: React.FC = () => {
 
       fetchCertifications();
       handleCancelForm();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving certification:', error);
-      toast.error(error.message || 'Failed to save certification');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save certification';
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
     }

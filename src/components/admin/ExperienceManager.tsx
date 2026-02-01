@@ -61,9 +61,13 @@ const ExperienceManager: React.FC = () => {
     try {
       setSubmitting(true);
 
+      // Convert empty strings to null for optional fields
       const experienceData = {
         ...formData,
-        end_date: formData.is_current ? null : formData.end_date,
+        end_date: formData.is_current ? null : (formData.end_date || null),
+        description: formData.description || null,
+        certificate_url: formData.certificate_url || null,
+        logo_url: formData.logo_url || null,
       };
 
       if (editingId) {
@@ -85,9 +89,10 @@ const ExperienceManager: React.FC = () => {
 
       fetchExperiences();
       handleCancelForm();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving experience:', error);
-      toast.error(error.message || 'Failed to save experience');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save experience';
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
     }

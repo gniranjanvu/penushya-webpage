@@ -54,10 +54,18 @@ const AchievementManager: React.FC = () => {
     try {
       setSubmitting(true);
 
+      // Convert empty strings to null for optional fields
+      const achievementData = {
+        ...formData,
+        description: formData.description || null,
+        date: formData.date || null,
+        image_url: formData.image_url || null,
+      };
+
       if (editingId) {
         const { error } = await supabase
           .from('achievements')
-          .update(formData)
+          .update(achievementData)
           .eq('id', editingId);
 
         if (error) throw error;
@@ -65,7 +73,7 @@ const AchievementManager: React.FC = () => {
       } else {
         const { error } = await supabase
           .from('achievements')
-          .insert([formData]);
+          .insert([achievementData]);
 
         if (error) throw error;
         toast.success('Achievement added successfully');
@@ -73,9 +81,10 @@ const AchievementManager: React.FC = () => {
 
       fetchAchievements();
       handleCancelForm();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving achievement:', error);
-      toast.error(error.message || 'Failed to save achievement');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save achievement';
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
     }
