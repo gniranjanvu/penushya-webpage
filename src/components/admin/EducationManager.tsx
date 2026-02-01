@@ -61,9 +61,13 @@ const EducationManager: React.FC = () => {
     try {
       setSubmitting(true);
 
+      // Convert empty strings to null for optional fields
       const educationData = {
         ...formData,
-        end_date: formData.is_current ? null : formData.end_date,
+        end_date: formData.is_current ? null : (formData.end_date || null),
+        grade: formData.grade || null,
+        certificate_url: formData.certificate_url || null,
+        logo_url: formData.logo_url || null,
       };
 
       if (editingId) {
@@ -85,9 +89,10 @@ const EducationManager: React.FC = () => {
 
       fetchEducations();
       handleCancelForm();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving education:', error);
-      toast.error(error.message || 'Failed to save education');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save education';
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
     }

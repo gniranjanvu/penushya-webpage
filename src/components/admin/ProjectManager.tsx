@@ -4,6 +4,7 @@ import { toast } from 'react-toastify';
 import { Code, Plus, Edit, Trash2, Save, X, Star } from 'lucide-react';
 import { supabase } from '../../lib/supabase';
 import type { Project } from '../../types';
+import RichTextEditor from './RichTextEditor';
 
 interface ProjectFormData {
   title: string;
@@ -22,6 +23,7 @@ const ProjectManager: React.FC = () => {
   const [showForm, setShowForm] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
+  const [fullDescription, setFullDescription] = useState('');
 
   const {
     register,
@@ -64,12 +66,12 @@ const ProjectManager: React.FC = () => {
 
       const projectData = {
         title: formData.title,
-        short_description: formData.short_description,
-        full_description: formData.full_description,
-        hero_image_url: formData.hero_image_url,
+        short_description: formData.short_description || null,
+        full_description: fullDescription || null,
+        hero_image_url: formData.hero_image_url || null,
         tech_stack: techStackArray,
         is_featured: formData.is_featured,
-        category: formData.category,
+        category: formData.category || null,
         display_order: formData.display_order,
       };
 
@@ -92,9 +94,10 @@ const ProjectManager: React.FC = () => {
 
       fetchProjects();
       handleCancelForm();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error saving project:', error);
-      toast.error(error.message || 'Failed to save project');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to save project';
+      toast.error(errorMessage);
     } finally {
       setSubmitting(false);
     }
@@ -104,7 +107,7 @@ const ProjectManager: React.FC = () => {
     setEditingId(project.id);
     setValue('title', project.title);
     setValue('short_description', project.short_description || '');
-    setValue('full_description', project.full_description || '');
+    setFullDescription(project.full_description || '');
     setValue('hero_image_url', project.hero_image_url || '');
     setValue('tech_stack', project.tech_stack?.join(', ') || '');
     setValue('is_featured', project.is_featured);
@@ -134,15 +137,16 @@ const ProjectManager: React.FC = () => {
   const handleCancelForm = () => {
     setShowForm(false);
     setEditingId(null);
+    setFullDescription('');
     reset();
   };
 
   const handleAddNew = () => {
     setEditingId(null);
+    setFullDescription('');
     reset({
       title: '',
       short_description: '',
-      full_description: '',
       hero_image_url: '',
       tech_stack: '',
       is_featured: false,
@@ -284,15 +288,17 @@ const ProjectManager: React.FC = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                Full Description
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                Full Description (Rich Text Editor)
               </label>
-              <textarea
-                {...register('full_description')}
-                rows={6}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
-                placeholder="Detailed description of the project, features, challenges, etc."
+              <RichTextEditor
+                content={fullDescription}
+                onChange={setFullDescription}
+                placeholder="Write detailed description of the project. You can add text formatting, images, videos, and more..."
               />
+              <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
+                Use the toolbar above to format text, add headings, lists, images, and YouTube videos.
+              </p>
             </div>
 
             <div className="flex gap-3 justify-end">

@@ -20,7 +20,7 @@ const ResumeManager: React.FC = () => {
     try {
       setLoading(true);
       const { data, error } = await supabase
-        .from('resumes')
+        .from('resume')
         .select('*')
         .order('uploaded_at', { ascending: false })
         .limit(1)
@@ -32,9 +32,12 @@ const ResumeManager: React.FC = () => {
       }
       
       setResume(data || null);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error fetching resume:', error);
-      toast.error('Failed to load resume');
+      // Don't show error if no resume exists yet
+      if (error && typeof error === 'object' && 'code' in error && error.code !== 'PGRST116') {
+        toast.error('Failed to load resume');
+      }
     } finally {
       setLoading(false);
     }
@@ -92,11 +95,11 @@ const ResumeManager: React.FC = () => {
         }
 
         // Delete old resume record from database
-        await supabase.from('resumes').delete().eq('id', resume.id);
+        await supabase.from('resume').delete().eq('id', resume.id);
       }
 
       // Save resume record to database
-      const { error: dbError } = await supabase.from('resumes').insert([
+      const { error: dbError } = await supabase.from('resume').insert([
         {
           file_url: urlData.publicUrl,
           filename: selectedFile.name,
@@ -112,9 +115,10 @@ const ResumeManager: React.FC = () => {
       // Reset file input
       const fileInput = document.getElementById('resume-file') as HTMLInputElement;
       if (fileInput) fileInput.value = '';
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error uploading resume:', error);
-      toast.error(error.message || 'Failed to upload resume');
+      const errorMessage = error instanceof Error ? error.message : 'Failed to upload resume';
+      toast.error(errorMessage);
     } finally {
       setUploading(false);
     }
@@ -139,7 +143,7 @@ const ResumeManager: React.FC = () => {
 
       // Delete from database
       const { error: dbError } = await supabase
-        .from('resumes')
+        .from('resume')
         .delete()
         .eq('id', resume.id);
 
@@ -147,7 +151,7 @@ const ResumeManager: React.FC = () => {
 
       toast.success('Resume deleted successfully');
       setResume(null);
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Error deleting resume:', error);
       toast.error('Failed to delete resume');
     } finally {
