@@ -15,7 +15,7 @@ interface SkillFormData {
 
 const SKILL_CATEGORIES = [
   'Programming Languages',
-  'Frontend',
+  'Technologies & Framework',
   'Backend',
   'Database',
   'DevOps',
