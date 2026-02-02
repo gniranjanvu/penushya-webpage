@@ -158,8 +158,8 @@ USING (
 1. Go to **Authentication** → **Users** in Supabase Dashboard
 2. Click **Add User** → **Create new user**
 3. Fill in the details:
-   - **Email**: Your admin email (e.g., `prudhvirajchalapaka@gmail.com`)
-   - **Password**: Create a strong password (e.g., `HareKrishna@07`)
+   - **Email**: Your admin email (e.g., `admin@example.com`)
+   - **Password**: Create a strong password
    - **Auto Confirm User**: ✅ Yes (check this box)
 4. Click **Create User**
 

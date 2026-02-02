@@ -84,7 +84,7 @@ const ResumeManager: React.FC = () => {
         // Check if it's a bucket not found error
         if (uploadError.message?.includes('Bucket not found') || 
             uploadError.message?.includes('bucket') ||
-            uploadError.statusCode === '404') {
+            uploadError.status === 404) {
           throw new Error('Storage bucket "resumes" not found. Please create the bucket in Supabase Dashboard. See SETUP.md for instructions.');
         }
         throw uploadError;

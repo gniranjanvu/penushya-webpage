@@ -146,13 +146,19 @@ const ProjectManager: React.FC = () => {
       }
 
       // Save images
-      await saveProjectImages(projectId!);
+      if (projectId) {
+        await saveProjectImages(projectId);
+      }
       
       // Save videos
-      await saveProjectVideos(projectId!);
+      if (projectId) {
+        await saveProjectVideos(projectId);
+      }
       
       // Save buttons
-      await saveProjectButtons(projectId!);
+      if (projectId) {
+        await saveProjectButtons(projectId);
+      }
 
       toast.success(editingId ? 'Project updated successfully' : 'Project added successfully');
       fetchProjects();
