@@ -7,6 +7,7 @@ import { toast } from 'react-toastify';
 const Hero = () => {
   const [displayedText, setDisplayedText] = useState('');
   const [downloading, setDownloading] = useState(false);
+  const [imageError, setImageError] = useState(false);
   const fullText = 'Robotics & Automation Engineer';
   const typingSpeed = 100;
 
@@ -37,10 +38,20 @@ const Hero = () => {
       if (error) throw error;
       
       if (data?.file_url) {
+        // Fetch the file as a blob for reliable downloading
+        const response = await fetch(data.file_url);
+        if (!response.ok) throw new Error('Failed to fetch resume');
+        
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
-        link.href = data.file_url;
+        link.href = url;
         link.download = data.filename || 'resume.pdf';
+        document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+        
         toast.success('Resume download started');
       } else {
         toast.error('No resume available');
@@ -213,24 +224,20 @@ const Hero = () => {
                   {/* Image Container */}
                   <div className="absolute inset-4 rounded-full backdrop-blur-md bg-gradient-to-br from-indigo-100/50 to-purple-100/50 dark:from-indigo-900/50 dark:to-purple-900/50 border border-white/20 shadow-2xl flex items-center justify-center overflow-hidden">
                     {/* Profile Image - uses profile.jpg from public/images if available */}
-                    <img
-                      src="/images/profile.jpg"
-                      alt="Penushya Varri"
-                      className="w-full h-full object-cover"
-                      onError={(e) => {
-                        // Fallback to initials if image not found
-                        const target = e.target as HTMLImageElement;
-                        target.style.display = 'none';
-                        const parent = target.parentElement;
-                        if (parent) {
-                          parent.innerHTML = `
-                            <div class="flex items-center justify-center w-full h-full bg-gradient-to-br from-indigo-200 to-purple-200 dark:from-indigo-800 dark:to-purple-800">
-                              <span class="text-6xl sm:text-7xl lg:text-8xl font-bold text-white">PV</span>
-                            </div>
-                          `;
-                        }
-                      }}
-                    />
+                    {!imageError ? (
+                      <img
+                        src="/images/profile.jpg"
+                        alt="Penushya Varri"
+                        className="w-full h-full object-cover"
+                        onError={() => setImageError(true)}
+                      />
+                    ) : (
+                      <div className="flex items-center justify-center w-full h-full bg-gradient-to-br from-indigo-200 to-purple-200 dark:from-indigo-800 dark:to-purple-800">
+                        <span className="text-6xl sm:text-7xl lg:text-8xl font-bold text-white">
+                          PV
+                        </span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </motion.div>
