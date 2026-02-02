@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
-import { Code, Plus, Edit, Trash2, Save, X, Star, Upload, Image as ImageIcon, Video, Link2, ExternalLink } from 'lucide-react';
+import { Code, Plus, Edit, Trash2, Save, X, Star, Image as ImageIcon, Video, Link2 } from 'lucide-react';
 import { supabase, uploadFile, deleteFile, getPublicUrl } from '../../lib/supabase';
 import type { Project, ProjectImage, ProjectVideo, ProjectButton } from '../../types';
 import RichTextEditor from './RichTextEditor';
@@ -52,7 +52,6 @@ const ProjectManager: React.FC = () => {
   const [images, setImages] = useState<ImageItem[]>([]);
   const [videos, setVideos] = useState<VideoItem[]>([]);
   const [buttons, setButtons] = useState<ButtonItem[]>([]);
-  const [uploadingHero, setUploadingHero] = useState(false);
 
   const {
     register,
@@ -105,7 +104,8 @@ const ProjectManager: React.FC = () => {
         const result = await uploadFile('images', fileName, heroImageFile);
         
         if (result.error) {
-          if (result.error.message?.includes('Bucket not found')) {
+          const errorMessage = result.error instanceof Error ? result.error.message : String(result.error);
+          if (errorMessage.includes('Bucket not found')) {
             throw new Error('Storage bucket "images" not found. Please create the bucket in Supabase Dashboard. See SETUP.md for instructions.');
           }
           throw result.error;
