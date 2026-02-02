@@ -1,9 +1,12 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, Mail } from 'lucide-react';
+import { supabase } from '../../lib/supabase';
+import { toast } from 'react-toastify';
 
 const Hero = () => {
   const [displayedText, setDisplayedText] = useState('');
+  const [downloading, setDownloading] = useState(false);
   const fullText = 'Robotics & Automation Engineer';
   const typingSpeed = 100;
 
@@ -21,9 +24,33 @@ const Hero = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const handleDownloadResume = () => {
-    // TODO: Implement resume download
-    console.log('Downloading resume...');
+  const handleDownloadResume = async () => {
+    try {
+      setDownloading(true);
+      const { data, error } = await supabase
+        .from('resume')
+        .select('file_url, filename')
+        .order('uploaded_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (error) throw error;
+      
+      if (data?.file_url) {
+        const link = document.createElement('a');
+        link.href = data.file_url;
+        link.download = data.filename || 'resume.pdf';
+        link.click();
+        toast.success('Resume download started');
+      } else {
+        toast.error('No resume available');
+      }
+    } catch (error) {
+      console.error('Error downloading resume:', error);
+      toast.error('Failed to download resume');
+    } finally {
+      setDownloading(false);
+    }
   };
 
   const handleContactClick = () => {
@@ -129,10 +156,11 @@ const Hero = () => {
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleDownloadResume}
-                className="flex items-center justify-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all"
+                disabled={downloading}
+                className="flex items-center justify-center gap-2 px-8 py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold rounded-xl shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <Download className="h-5 w-5" />
-                Download Resume
+                {downloading ? 'Downloading...' : 'Download Resume'}
               </motion.button>
 
               <motion.button
@@ -184,12 +212,25 @@ const Hero = () => {
 
                   {/* Image Container */}
                   <div className="absolute inset-4 rounded-full backdrop-blur-md bg-gradient-to-br from-indigo-100/50 to-purple-100/50 dark:from-indigo-900/50 dark:to-purple-900/50 border border-white/20 shadow-2xl flex items-center justify-center overflow-hidden">
-                    {/* Placeholder - Replace with actual image */}
-                    <div className="flex items-center justify-center w-full h-full bg-gradient-to-br from-indigo-200 to-purple-200 dark:from-indigo-800 dark:to-purple-800">
-                      <span className="text-6xl sm:text-7xl lg:text-8xl font-bold text-white">
-                        PV
-                      </span>
-                    </div>
+                    {/* Profile Image - uses profile.jpg from public/images if available */}
+                    <img
+                      src="/images/profile.jpg"
+                      alt="Penushya Varri"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        // Fallback to initials if image not found
+                        const target = e.target as HTMLImageElement;
+                        target.style.display = 'none';
+                        const parent = target.parentElement;
+                        if (parent) {
+                          parent.innerHTML = `
+                            <div class="flex items-center justify-center w-full h-full bg-gradient-to-br from-indigo-200 to-purple-200 dark:from-indigo-800 dark:to-purple-800">
+                              <span class="text-6xl sm:text-7xl lg:text-8xl font-bold text-white">PV</span>
+                            </div>
+                          `;
+                        }
+                      }}
+                    />
                   </div>
                 </div>
               </motion.div>

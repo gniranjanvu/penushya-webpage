@@ -195,6 +195,20 @@ const Achievements = () => {
                               <span>{formatDateLong(achievement.date)}</span>
                             </div>
                           )}
+
+                          {/* View Certificate Button */}
+                          {achievement.certificate_url && (
+                            <a
+                              href={achievement.certificate_url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-rose-500 to-pink-500 text-white rounded-lg hover:from-rose-600 hover:to-pink-600 transition-all duration-300 shadow-md hover:shadow-lg text-sm font-medium group/button mt-4"
+                            >
+                              <FileText className="w-4 h-4" />
+                              <span>View Certificate</span>
+                              <ExternalLink className="w-4 h-4 group-hover/button:translate-x-1 group-hover/button:-translate-y-1 transition-transform duration-300" />
+                            </a>
+                          )}
                         </div>
                       </div>
                     </motion.div>

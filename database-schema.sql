@@ -139,6 +139,7 @@ CREATE TABLE IF NOT EXISTS achievements (
     description TEXT,
     date DATE,
     image_url TEXT,
+    certificate_url TEXT,
     display_order INTEGER DEFAULT 0,
     is_published BOOLEAN DEFAULT true,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT TIMEZONE('utc', NOW())

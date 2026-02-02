@@ -106,6 +106,7 @@ export interface Achievement {
   description?: string;
   date?: string;
   image_url?: string;
+  certificate_url?: string;
   display_order: number;
   is_published: boolean;
   created_at: string;
