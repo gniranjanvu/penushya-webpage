@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import ReactMarkdown from 'react-markdown';
+import parse from 'html-react-parser';
+import DOMPurify from 'dompurify';
 import {
   Code,
   Calendar,
@@ -30,6 +31,15 @@ const ProjectDetail = () => {
   const [loading, setLoading] = useState(true);
   const [notFound, setNotFound] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+
+  // Helper function to safely sanitize and parse HTML
+  const renderSanitizedHTML = (html: string) => {
+    if (typeof window !== 'undefined') {
+      const sanitizedHTML = DOMPurify.sanitize(html);
+      return parse(sanitizedHTML);
+    }
+    return html; // Fallback for SSR scenarios (though not used in this SPA)
+  };
 
   useEffect(() => {
     const fetchProjectDetails = async () => {
@@ -84,7 +94,7 @@ const ProjectDetail = () => {
 
   const getYouTubeEmbedUrl = (url: string) => {
     const videoId = url.match(
-      /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/
+      /(?:youtube\.com\/(?:[^/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?/\s]{11})/
     )?.[1];
     return videoId ? `https://www.youtube.com/embed/${videoId}` : url;
   };
@@ -188,9 +198,7 @@ const ProjectDetail = () => {
                     About This Project
                   </h2>
                   <div className="prose prose-lg dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
-                    <ReactMarkdown>
-                      {project.full_description || project.short_description || 'No description available'}
-                    </ReactMarkdown>
+                    {renderSanitizedHTML(project.full_description || project.short_description || 'No description available')}
                   </div>
                 </motion.div>
 
