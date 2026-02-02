@@ -32,6 +32,15 @@ const ProjectDetail = () => {
   const [notFound, setNotFound] = useState(false);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  // Helper function to safely sanitize and parse HTML
+  const renderSanitizedHTML = (html: string) => {
+    if (typeof window !== 'undefined') {
+      const sanitizedHTML = DOMPurify.sanitize(html);
+      return parse(sanitizedHTML);
+    }
+    return html; // Fallback for SSR scenarios (though not used in this SPA)
+  };
+
   useEffect(() => {
     const fetchProjectDetails = async () => {
       if (!id) {
@@ -189,7 +198,7 @@ const ProjectDetail = () => {
                     About This Project
                   </h2>
                   <div className="prose prose-lg dark:prose-invert max-w-none text-gray-700 dark:text-gray-300">
-                    {parse(DOMPurify.sanitize(project.full_description || project.short_description || 'No description available'))}
+                    {renderSanitizedHTML(project.full_description || project.short_description || 'No description available')}
                   </div>
                 </motion.div>
 
