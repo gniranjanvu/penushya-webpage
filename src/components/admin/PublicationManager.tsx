@@ -57,12 +57,13 @@ const PublicationManager: React.FC = () => {
       setSubmitting(true);
 
       // Convert empty strings to null for optional fields
+      // Ensure publication_date is in YYYY-MM-DD format or null
       const publicationData = {
         ...formData,
-        publication_venue: formData.publication_venue || null,
-        publication_date: formData.publication_date || null,
-        abstract: formData.abstract || null,
-        url: formData.url || null,
+        publication_venue: formData.publication_venue?.trim() || null,
+        publication_date: formData.publication_date?.trim() || null,
+        abstract: formData.abstract?.trim() || null,
+        url: formData.url?.trim() || null,
       };
 
       if (editingId) {

@@ -87,12 +87,17 @@
    VITE_SUPABASE_ANON_KEY=your_supabase_anon_key_here
    ```
 
-4. **Set up Supabase database**
+4. **Set up Supabase database and storage**
+   
+   **📚 For complete setup instructions, see [SETUP.md](SETUP.md)**
+   
+   Quick overview:
    - Go to your Supabase project dashboard
    - Navigate to SQL Editor
    - Copy the contents of `database-schema.sql`
    - Paste and execute the SQL script
-   - This will create all necessary tables with default data
+   - Create storage buckets (`resumes` and `images`) in Storage section
+   - Set up storage policies (see SETUP.md for details)
 
 5. **Create admin user in Supabase**
    - Go to Authentication → Users in Supabase dashboard
