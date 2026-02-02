@@ -10,6 +10,7 @@ interface AchievementFormData {
   description?: string;
   date?: string;
   image_url?: string;
+  certificate_url?: string;
   display_order: number;
 }
 
@@ -60,6 +61,7 @@ const AchievementManager: React.FC = () => {
         description: formData.description || null,
         date: formData.date || null,
         image_url: formData.image_url || null,
+        certificate_url: formData.certificate_url || null,
       };
 
       if (editingId) {
@@ -96,6 +98,7 @@ const AchievementManager: React.FC = () => {
     setValue('description', achievement.description || '');
     setValue('date', achievement.date || '');
     setValue('image_url', achievement.image_url || '');
+    setValue('certificate_url', achievement.certificate_url || '');
     setValue('display_order', achievement.display_order);
     setShowForm(true);
   };
@@ -131,6 +134,7 @@ const AchievementManager: React.FC = () => {
       description: '',
       date: '',
       image_url: '',
+      certificate_url: '',
       display_order: achievements.length + 1,
     });
     setShowForm(true);
@@ -220,6 +224,18 @@ const AchievementManager: React.FC = () => {
                   type="url"
                   {...register('image_url')}
                   placeholder="https://..."
+                  className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
+                />
+              </div>
+
+              <div className="md:col-span-2">
+                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                  Certificate URL
+                </label>
+                <input
+                  type="url"
+                  {...register('certificate_url')}
+                  placeholder="https://... (link to PDF or certificate)"
                   className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:text-white"
                 />
               </div>
