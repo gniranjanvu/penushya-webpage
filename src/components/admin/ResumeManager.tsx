@@ -80,7 +80,15 @@ const ResumeManager: React.FC = () => {
           upsert: false,
         });
 
-      if (uploadError) throw uploadError;
+      if (uploadError) {
+        // Check if it's a bucket not found error
+        if (uploadError.message?.includes('Bucket not found') || 
+            uploadError.message?.includes('bucket') ||
+            uploadError.status === 404) {
+          throw new Error('Storage bucket "resumes" not found. Please create the bucket in Supabase Dashboard. See SETUP.md for instructions.');
+        }
+        throw uploadError;
+      }
 
       // Get public URL
       const { data: urlData } = supabase.storage
@@ -117,8 +125,8 @@ const ResumeManager: React.FC = () => {
       if (fileInput) fileInput.value = '';
     } catch (error: unknown) {
       console.error('Error uploading resume:', error);
-      const errorMessage = error instanceof Error ? error.message : 'Failed to upload resume';
-      toast.error(errorMessage);
+      const errorMessage = error instanceof Error ? error.message : 'Failed to upload resume. Please ensure the "resumes" bucket exists in Supabase Storage.';
+      toast.error(errorMessage, { autoClose: 8000 });
     } finally {
       setUploading(false);
     }
@@ -138,7 +146,10 @@ const ResumeManager: React.FC = () => {
           .from('resumes')
           .remove([fileName]);
 
-        if (storageError) throw storageError;
+        if (storageError) {
+          console.warn('Error deleting file from storage:', storageError);
+          // Don't throw - continue to delete DB record even if storage delete fails
+        }
       }
 
       // Delete from database
@@ -291,6 +302,18 @@ const ResumeManager: React.FC = () => {
             <li>Uploading a new resume will replace the existing one</li>
             <li>The resume will be publicly accessible for download</li>
           </ul>
+        </div>
+
+        {/* Setup Notice */}
+        <div className="mt-4 p-4 bg-blue-50 dark:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800">
+          <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2 flex items-center gap-2">
+            <FileText className="w-4 h-4" />
+            First Time Setup Required
+          </h4>
+          <p className="text-sm text-blue-800 dark:text-blue-200">
+            If you see a "Bucket not found" error, you need to create the <strong>resumes</strong> storage bucket in your Supabase project.
+            See <strong>SETUP.md</strong> for detailed instructions on setting up storage buckets.
+          </p>
         </div>
       </div>
     </div>

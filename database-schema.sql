@@ -1,6 +1,29 @@
 -- Penushya Portfolio Website Database Schema
 -- Execute this in your Supabase SQL editor
 
+-- ====================================================================================
+-- IMPORTANT: Storage Buckets Setup
+-- ====================================================================================
+-- This schema creates database tables only. You MUST also create storage buckets
+-- manually in the Supabase Dashboard (Storage section).
+--
+-- Required Buckets:
+-- 
+-- 1. Bucket Name: resumes
+--    - Public: YES
+--    - File size limit: 5 MB
+--    - Allowed MIME types: application/pdf
+--    - Used for: Resume PDF files
+--
+-- 2. Bucket Name: images  
+--    - Public: YES
+--    - File size limit: 10 MB
+--    - Allowed MIME types: image/jpeg, image/png, image/gif, image/webp
+--    - Used for: Project images, logos, certificates, achievements
+--
+-- See SETUP.md for detailed instructions on creating buckets and setting up policies.
+-- ====================================================================================
+
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
@@ -324,3 +347,70 @@ CREATE POLICY "Authenticated users have full access to resume" ON resume
 
 CREATE POLICY "Authenticated users have full access to site_settings" ON site_settings
     FOR ALL USING (auth.role() = 'authenticated');
+
+-- ====================================================================================
+-- Storage Bucket Policies
+-- ====================================================================================
+-- After creating the 'resumes' and 'images' buckets in Supabase Dashboard → Storage,
+-- apply these policies to enable proper access control.
+--
+-- Note: You must create the buckets first before applying these policies!
+-- See SETUP.md for step-by-step instructions.
+-- ====================================================================================
+
+-- Bucket: resumes
+-- Policies for resume PDF files
+
+-- Allow public to read/download resumes
+CREATE POLICY "Public can view resumes"
+ON storage.objects FOR SELECT
+USING ( bucket_id = 'resumes' );
+
+-- Allow authenticated users to upload resumes
+CREATE POLICY "Authenticated users can upload resumes"
+ON storage.objects FOR INSERT
+WITH CHECK (
+  bucket_id = 'resumes' 
+  AND auth.role() = 'authenticated'
+);
+
+-- Allow authenticated users to delete resumes
+CREATE POLICY "Authenticated users can delete resumes"
+ON storage.objects FOR DELETE
+USING (
+  bucket_id = 'resumes' 
+  AND auth.role() = 'authenticated'
+);
+
+-- Bucket: images
+-- Policies for project images, logos, certificates
+
+-- Allow public to view images
+CREATE POLICY "Public can view images"
+ON storage.objects FOR SELECT
+USING ( bucket_id = 'images' );
+
+-- Allow authenticated users to upload images
+CREATE POLICY "Authenticated users can upload images"
+ON storage.objects FOR INSERT
+WITH CHECK (
+  bucket_id = 'images' 
+  AND auth.role() = 'authenticated'
+);
+
+-- Allow authenticated users to delete images
+CREATE POLICY "Authenticated users can delete images"
+ON storage.objects FOR DELETE
+USING (
+  bucket_id = 'images' 
+  AND auth.role() = 'authenticated'
+);
+
+-- Allow authenticated users to update images
+CREATE POLICY "Authenticated users can update images"
+ON storage.objects FOR UPDATE
+USING (
+  bucket_id = 'images' 
+  AND auth.role() = 'authenticated'
+);
+
