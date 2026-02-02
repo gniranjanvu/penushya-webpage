@@ -223,10 +223,10 @@ const Hero = () => {
 
                   {/* Image Container */}
                   <div className="absolute inset-4 rounded-full backdrop-blur-md bg-gradient-to-br from-indigo-100/50 to-purple-100/50 dark:from-indigo-900/50 dark:to-purple-900/50 border border-white/20 shadow-2xl flex items-center justify-center overflow-hidden">
-                    {/* Profile Image - uses profile.jpg from public/images if available */}
+                    {/* Profile Image - uses profile.png from public/images if available */}
                     {!imageError ? (
                       <img
-                        src="/images/profile.jpg"
+                        src="/images/profile.png"
                         alt="Penushya Varri"
                         className="w-full h-full object-cover"
                         onError={() => setImageError(true)}
